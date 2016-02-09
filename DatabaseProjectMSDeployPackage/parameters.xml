@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<parameters>
+  <parameter name="ConnectionString-Database"
+     description="Connection string to the database."
+     defaultValue="Data Source=(local)\sqlexpress2014;Initial Catalog=LocalDatabase;Integrated Security=True">
+    <parameterEntry
+       type="ProviderPath"
+       scope="dbFullSql|dbSqlPackage|dbDacFx"
+       match="TargetDatabase;"/>
+  </parameter>
+</parameters>

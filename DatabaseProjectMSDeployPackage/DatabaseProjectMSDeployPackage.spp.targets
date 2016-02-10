@@ -1,57 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--<Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v14.0\WebApplications\Microsoft.WebApplication.targets" />-->
-
   <UsingTask TaskName="MSDeploy" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v14.0\Web\Microsoft.Web.Publishing.Tasks.dll"/>
   
-  <!--<MSdeploy
-        MSDeployVersionsToTry="$(_MSDeployVersionsToTry)"
-        Verb="sync"
-        Source="@(_AoPubAppOfflineSourceProviderSetting)"
-        Destination="@(_AoPubAppOfflineDestProviderSetting)"
-        EnableRule="DoNotDeleteRule"
-        AllowUntrusted="$(AllowUntrustedCertificate)"
-        RetryAttempts="$(RetryAttemptsForDeployment)"
-        SimpleSetParameterItems="@(_AoArchivePublishSetParam)"
-        ExePath="$(MSDeployPath)" />-->
-  <!--<PropertyGroup>
-    <MSDeployExe Condition=" '$(MSDeployExe)'=='' ">$(MSDeployPath)msdeploy.exe</MSDeployExe>
-  </PropertyGroup>-->
-
   <Target Name="AfterBuild">
     <PropertyGroup>
       <FullOutputPath>$(MSBuildProjectDirectory)\$(OutputPath)</FullOutputPath>
       <PackageFilename>$(MSBuildProjectName).zip</PackageFilename>
       <PackageFullPath>$(FullOutputPath)$(PackageFilename)</PackageFullPath>
       <MSDeployPath Condition="'$(MSDeployPath)'==''">C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe</MSDeployPath>
-      <DestinationManifestFilename>DestinationManifest.xml</DestinationManifestFilename>
-      <DestinationManifestFile>$(FullOutputPath)$(DestinationManifestFilename)</DestinationManifestFile>
-      <SourceManifestFilename>SourceManifest.xml</SourceManifestFilename>
-      <SourceManifestFile>$(FullOutputPath)$(SourceManifestFilename)</SourceManifestFile>
     </PropertyGroup>
-    
-    <ItemGroup>      
-      <SourceManifestLines Include="&lt;sqldeploymanifest&gt;" />
-      <SourceManifestLines Include="&lt;dbDacFx path=&quot;$(FullOutputPath)$(MSBuildProjectName).dacpac&quot; /&gt;" />
-      <SourceManifestLines Include="&lt;/sqldeploymanifest&gt;" />
-      
-      <DestinationManifestLines Include="&lt;sqldeploymanifest&gt;" />
-      <DestinationManifestLines Include="&lt;dbDacFx path=%22Data Source=(local)\sqlexpress2014%3bInitial Catalog=TargetDatabase%3bIntegrated Security=True%22 /&gt;" />
-      <DestinationManifestLines Include="&lt;/sqldeploymanifest&gt;" />
-    </ItemGroup>
-          
-    <WriteLinesToFile
-      File="$(DestinationManifestFile)"
-      Lines="@(DestinationManifestLines)"
-      Overwrite="true" />
-    <WriteLinesToFile
-      File="$(SourceManifestFile)"
-      Lines="@(SourceManifestLines)"
-      Overwrite="true" />
-    
     <MSdeploy
           Verb="sync"
-          Source="manifest=%22$(SourceManifestFile)%22"
+          Source="dbDacFx=&quot;$(FullOutputPath)$(MSBuildProjectName).dacpac&quot;"
           Destination="package=&quot;$(PackageFullPath)&quot;"
           ExePath="$(_MSDeployDirPath_FullPath)"
           ImportDeclareParametersItems="$(FullOutputPath)parameters.xml"
@@ -64,9 +24,7 @@
       <DeployCMDLines Include=":Deploy" />
       <DeployCMDLines Include="ECHO Starting deployment ..." />
       <DeployCMDLines Include="@ECHO ON" />
-      <DeployCMDLines Include="%22$(MSDeployPath)%22 -verb:sync -source:manifest=%22$(SourceManifestFilename)%22 -dest:manifest=%22$(DestinationManifestFilename)%22,username=,password= -verbose -setParamFile:SetParameters.%1.xml %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9" />
-      <!--<DeployCMDLines Include="%22$(MSDeployPath)%22 -verb:sync -source:package=%22$(PackageFilename)%22 -dest:manifest=%22$(DestinationManifestFilename)%22,username=,password= -verbose -setParamFile:SetParameters.%1.xml %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9" />-->
-      <!--<DeployCMDLines Include="%22$(MSDeployPath)%22 -verb:sync -source:package=%22$(PackageFilename)%22 -dest:dbDacFx=&quot;Data Source=(local)\sqlexpress2014%3bInitial Catalog=TargetDatabase%3bIntegrated Security=True&quot;,username=,password= -verbose -setParamFile:SetParameters.%1.xml %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9" />-->
+      <DeployCMDLines Include="%22$(MSDeployPath)%22 -verb:sync -source:package=$(PackageFilename) -dest:dbDacFx=TargetDatabase -verbose -setParamFile:SetParameters.%1.xml %~2 %~3 %~4 %~5 %~6 %~7 %~8 %~9" />
       <DeployCMDLines Include="@ECHO OFF" />
       <DeployCMDLines Include="GOTO End" />
       
@@ -87,7 +45,7 @@
       <DeployCMDLines Include=":End" />
     </ItemGroup>
     <WriteLinesToFile
-      File="$(FullOutputPath)$(MSBuildProjectName).deploy.cmd"
+      File="$(FullOutputPath)$(MSBuildProjectName).SQL.deploy.cmd"
       Lines="@(DeployCMDLines)"
       Overwrite="true" /> 
   </Target>

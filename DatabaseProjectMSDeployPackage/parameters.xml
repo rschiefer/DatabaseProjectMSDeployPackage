@@ -6,6 +6,6 @@
     <parameterEntry
        type="ProviderPath"
        scope="dbFullSql|dbSqlPackage|dbDacFx"
-       match="TargetDatabase;"/>
+       match="TargetDatabase"/>
   </parameter>
 </parameters>

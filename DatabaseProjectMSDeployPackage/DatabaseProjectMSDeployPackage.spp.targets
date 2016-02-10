@@ -34,7 +34,7 @@
       <DeployCMDLines Include="ECHO." />
       <DeployCMDLines Include="ECHO %(DeployTypes.DeployCommandFilenameOnly) ENVIRONMENT [Other MSDeploy parameters (up to 8)]" />
       <DeployCMDLines Include="ECHO." />
-      <DeployCMDLines Include="ECHO   ENVIRONMENT\t\tThe environment to use for the SetParameters.[environment].xml file." />
+      <DeployCMDLines Include="ECHO   *.SQL.deploy.cmd ENVIRONMENT\t\tThe environment to use for the SetParameters.[environment].xml file." />
       <DeployCMDLines Include="ECHO   MSDeploy params\t\tYou may optionally add any other MSDeploy parameters to the call.  For example:" />
       <DeployCMDLines Include="ECHO     -whatif" />
       <DeployCMDLines Include="ECHO     -retryAttempts" />
